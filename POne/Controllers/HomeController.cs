@@ -33,5 +33,24 @@ namespace POne.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult AddPerson()
+        {
+            ViewBag.Message = "";
+
+            return View();
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddPerson(CustomerModel input)
+        {
+            if(ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View();
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PZero.dtb.Entities
+namespace POne.dtb.Entities
 {
     public partial class Customers
     {

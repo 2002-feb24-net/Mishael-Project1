@@ -1,9 +1,9 @@
-﻿using PZero.dtb.Entities;
+﻿using POne.dtb.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PZero.dtb
+namespace POne.dtb
 {
     public interface IOrderList
     {

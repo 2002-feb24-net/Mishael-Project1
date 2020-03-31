@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POne", "POne.csproj", "{A1B1A238-E2EA-4BA2-B38A-32A570B23A76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PZero.dtb", "..\PZero.dtb\PZero.dtb.csproj", "{586D619C-B5A0-44DE-AEC8-1B6161CFD18A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POne.dtb", "..\PZero.dtb\POne.dtb.csproj", "{586D619C-B5A0-44DE-AEC8-1B6161CFD18A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

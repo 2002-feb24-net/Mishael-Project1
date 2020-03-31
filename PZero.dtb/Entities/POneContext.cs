@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace PZero.dtb.Entities
+namespace POne.dtb.Entities
 {
-    public partial class PZeroContext : DbContext
+    public partial class POneContext : DbContext
     {
-        public PZeroContext()
+        public POneContext()
         {
         }
 
-        public PZeroContext(DbContextOptions<PZeroContext> options)
+        public POneContext(DbContextOptions<POneContext> options)
             : base(options)
         {
         }

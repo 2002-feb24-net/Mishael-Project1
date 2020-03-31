@@ -1,16 +1,16 @@
-﻿using PZero.dtb.Entities;
+﻿using POne.dtb.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PZero.dtb
+namespace POne.dtb
 {
     public class Data
     {
         public static void AddLocation(string name)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 var location = new Locations { Name = name };
                 context.Add(location);
@@ -20,7 +20,7 @@ namespace PZero.dtb
 
         public static int GetQuantity(int ID, Func<int> GetInt)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 int max = context.Products.Find(ID).Stock;
                 int input = GetInt();
@@ -35,7 +35,7 @@ namespace PZero.dtb
 
         public static int ProductFromName(string name)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 int output = 0;
                 foreach (var item in context.Products) if (item.Name == name) output = item.PrdId;
@@ -45,7 +45,7 @@ namespace PZero.dtb
 
         public static void AddProduct(string name, int LocID, decimal p, int s = -1)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 var product = new Products
                 {
@@ -61,7 +61,7 @@ namespace PZero.dtb
 
         public static void AddOrder(int customer, IOrderList order)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 decimal price = 0;
                 foreach (var orderdata in order.Cart)
@@ -87,7 +87,7 @@ namespace PZero.dtb
 
         public static decimal GetPrice(int PID)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 return context.Products.Find(PID).Price;
             }
@@ -95,7 +95,7 @@ namespace PZero.dtb
 
         public static void AddCustomer(string name)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 var customer = new Customers { Name = name };
                 context.Add(customer);
@@ -105,7 +105,7 @@ namespace PZero.dtb
 
         public static void StockProduct(int ID, int stock)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 context.Products.Find(ID).Stock += stock;
                 context.SaveChanges();
@@ -114,7 +114,7 @@ namespace PZero.dtb
 
         public static void RemoveStore(int activeStore)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 context.Locations.Remove(context.Locations.Find(activeStore));
                 context.SaveChanges();
@@ -131,7 +131,7 @@ namespace PZero.dtb
                 OutputNames(found);
                 while (found.Count() > 0) found.RemoveAt(0);
                 string input = GetName();
-                using (var context = new PZeroContext())
+                using (var context = new POneContext())
                 {
                     var temp = context.Customers.Where(b => b.Name.Contains(input)).ToList();
                     foreach (var i in temp)
@@ -150,7 +150,7 @@ namespace PZero.dtb
 
             if(output == -1)
             {
-                using (var context = new PZeroContext())
+                using (var context = new POneContext())
                 {
                     output = context.Customers.Where(b => b.Name.Contains(found[0])).ToList()[0].CustId;
                 }
@@ -169,7 +169,7 @@ namespace PZero.dtb
                 OutputNames(found);
                 while (found.Count() > 0) found.RemoveAt(0);
                 string input = GetName();
-                using (var context = new PZeroContext())
+                using (var context = new POneContext())
                 {
                     var temp = context.Locations.Where(b => b.Name.Contains(input)).ToList();
                     foreach (var i in temp)
@@ -188,7 +188,7 @@ namespace PZero.dtb
 
             if (output == -1)
             {
-                using (var context = new PZeroContext())
+                using (var context = new POneContext())
                 {
                     output = context.Locations.Where(b => b.Name.Contains(found[0])).First().LocId;
                 }
@@ -199,7 +199,7 @@ namespace PZero.dtb
 
         public static string GetCustomer(int ID)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 return context.Customers.Find(ID).Name;
             }
@@ -207,7 +207,7 @@ namespace PZero.dtb
 
         public static string GetStore(int ID)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 return context.Locations.Find(ID).Name;
             }
@@ -215,14 +215,14 @@ namespace PZero.dtb
 
         public static List<string> GetCustomers()
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 return ((from f in context.Customers select f.Name).ToList());
             }
         }
         public static List<string> GetStores()
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 return ((from f in context.Locations select f.Name).ToList());
             }
@@ -230,7 +230,7 @@ namespace PZero.dtb
 
         public static List<string> GetProductNames(string locationName)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 var output = new List<string>();
                 int id = context.Locations.Find(LocIdFromName(locationName)).LocId;
@@ -247,7 +247,7 @@ namespace PZero.dtb
 
         public static List<decimal> GetProductPrices(string locationName)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 var output = new List<decimal>();
                 int id = context.Locations.Find(LocIdFromName(locationName)).LocId;
@@ -264,7 +264,7 @@ namespace PZero.dtb
 
         public static List<int> GetProductQuantities(string locationName)
         {
-            using (var context = new PZeroContext())
+            using (var context = new POneContext())
             {
                 var output = new List<int>();
                 int id = context.Locations.Find(LocIdFromName(locationName)).LocId;
@@ -281,13 +281,13 @@ namespace PZero.dtb
 
         private static int LocIdFromName(string locationName)
         {
-            using (var context = new PZeroContext()) foreach (var item in context.Locations) if (item.Name == locationName) return item.LocId;
+            using (var context = new POneContext()) foreach (var item in context.Locations) if (item.Name == locationName) return item.LocId;
             return -1;
         }
 
         public static void RemoveCustomer(int ID)
         {
-            using(var context = new PZeroContext())
+            using(var context = new POneContext())
             {
                 context.Customers.Remove(context.Customers.Find(ID));
                 context.SaveChanges();
