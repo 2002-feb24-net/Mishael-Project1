@@ -43,7 +43,7 @@ namespace POne.dtb
             }
         }
 
-        public static void AddProduct(string name, int LocID, decimal p, int s = -1)
+        public static void AddProduct(string name, int LocID, decimal p, int s)
         {
             using (var context = new POneContext())
             {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using POne.Lib;
 using POne.Models;
 
 namespace POne.Controllers
@@ -47,10 +48,53 @@ namespace POne.Controllers
         {
             if(ModelState.IsValid)
             {
-                return RedirectToAction("Index");
+                Input.AddPerson(input.FName, input.LName);
+                return RedirectToAction("ListPeople");
             }
 
             return View();
+        }
+
+        [NonAction]
+        public string FistNameOf(string x)
+        {
+            int index = x.IndexOf(',');
+            if (index == -1) return x;
+            else return x.Substring(0, index);
+        }
+
+        [NonAction]
+        public string LastNameOf(string x)
+        {
+            int index = x.IndexOf(',');
+            if (index == -1) return "";
+            else return x.Substring(index + 1, x.Length - index - 1);
+        }
+
+        public IActionResult ListPeople()
+        {
+            var Models = new List<CustomerModel>();
+
+            List<int> IDs = Output.GetCustomerIDs();
+            List<string> names = Output.GetCustomerNames();
+
+            for (int i = 0; i < IDs.Count; i++)
+            {
+                Models.Add(new CustomerModel {
+                    FName = FistNameOf(names[i]),
+                    LName = LastNameOf(names[i]),
+                    CustId = IDs[i]
+                });
+            }
+            
+            return View(Models);
+        }
+
+        public IActionResult RemovePerson(int? ID)
+        {
+            Input.RemovePerson(ID ?? default(int));
+
+            return RedirectToAction("ListPeople");
         }
     }
 }

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<POne.Models.CustomerModel>
+
+@{
+    ViewData["Title"] = "ListPeople";
+}
+
+<h1>ListPeople</h1>
+
+<p>
+    <a asp-action="AddPerson">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.CustId)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.FName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.CustId)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.FName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LName)
+            </td>
+            <td>
+                @Html.ActionLink("Delete", "RemovePerson", new { ID = item.CustId })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
