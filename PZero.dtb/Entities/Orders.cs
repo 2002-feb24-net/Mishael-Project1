@@ -13,7 +13,7 @@ namespace POne.dtb.Entities
         public int OrdId { get; set; }
         public int CustId { get; set; }
         public decimal Total { get; set; }
-        public DateTime? Stamp { get; set; }
+        public DateTime Stamp { get; set; }
 
         public virtual Customers Cust { get; set; }
         public virtual ICollection<OrderData> OrderData { get; set; }

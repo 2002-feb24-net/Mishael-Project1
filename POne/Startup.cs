@@ -32,6 +32,7 @@ namespace POne
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                POne.dtb.Data.SetConnectionString(Configuration["ConnectionString:Access"]);
             }
             else
             {

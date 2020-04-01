@@ -37,8 +37,6 @@ namespace POne.Controllers
 
         public IActionResult AddPerson()
         {
-            ViewBag.Message = "";
-
             return View();
         }
         
@@ -92,9 +90,152 @@ namespace POne.Controllers
 
         public IActionResult RemovePerson(int? ID)
         {
-            Input.RemovePerson(ID ?? default(int));
+            Input.RemovePerson(ID ?? default);
 
             return RedirectToAction("ListPeople");
+        }
+
+        public IActionResult AddLocation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddLocation(LocationModel input)
+        {
+            if (ModelState.IsValid)
+            {
+                Input.AddLocation(input.Name);
+                return RedirectToAction("ListLocations");
+            }
+
+            return View();
+        }
+
+        public IActionResult ListLocations()
+        {
+            var Models = new List<LocationModel>();
+
+            List<int> IDs = Output.GetLocationIDs();
+            List<string> names = Output.GetLocationNames();
+
+            for (int i = 0; i < IDs.Count; i++)
+            {
+                Models.Add(new LocationModel
+                {
+                    Name = names[i],
+                    LocID = IDs[i]
+                });
+            }
+
+            return View(Models);
+        }
+
+        public IActionResult RemoveLocation(int? ID)
+        {
+            Input.RemoveLocation(ID ?? default);
+
+            return RedirectToAction("ListLocations");
+        }
+
+        public IActionResult ListProductsEdit(int? ID)
+        {
+            var Models = new List<ProductModel>();
+
+            ViewData["LocationName"] = Output.GetLocationName(ID ?? default);
+            ViewData["ID"] = ID;
+
+            List<int> IDs = Output.GetProductIDs(ID ?? default);
+            List<string> names = Output.GetProductNames(ID ?? default);
+            List<decimal> prices = Output.GetProductPrices(ID ?? default);
+            List<int> stock = Output.GetProductStock(ID ?? default);
+
+            for (int i = 0; i < IDs.Count; i++)
+            {
+                Models.Add(new ProductModel
+                {
+                    PrdId = IDs[i],
+                    Name = names[i],
+                    Price = prices[i],
+                    Stock = stock[i]
+                });
+            }
+
+            return View(Models);
+        }
+
+        public IActionResult AddProduct(int ID)
+        {
+            ViewData["LocationName"] = Output.GetLocationName(ID);
+            ViewData["ID"] = ID;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddProduct(ProductModel product)
+        {
+            if (ModelState.IsValid)
+            {
+                Input.AddProduct(product.Name, (int)ViewData["ID"], product.Price ,product.Stock);
+                return RedirectToAction("ListLocations", new { ID = (int)ViewData["ID"] } );
+            }
+
+            return View();
+        }
+
+        public IActionResult LocationOrderHistory(int ID)
+        {
+            var Models = new List<LocationHistoryData>();
+
+            List<string> names = Output.GetLocationHistoryNames(ID);
+            List<decimal> prices = Output.GetLocationHistoryPrice(ID);
+            List<DateTime> stamps = Output.GetLocationHistoryStamp(ID);
+            List<int> quantitys = Output.GetLocationHistoryQuantity(ID);
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                Models.Add(new LocationHistoryData
+                {
+                    Quantity = quantitys[i],
+                    ProductName = names[i],
+                    Price = prices[i],
+                    Stamp = stamps[i]
+                });
+            }
+
+            return View(Models);
+        }
+
+        public IActionResult CustomerOrderHistory(int ID)
+        {
+            var Models = new List<LocationHistoryData>();
+
+            List<string> names = Output.GetLocationHistoryNames(ID);
+            List<decimal> prices = Output.GetLocationHistoryPrice(ID);
+            List<DateTime> stamps = Output.GetLocationHistoryStamp(ID);
+            List<int> quantitys = Output.GetLocationHistoryQuantity(ID);
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                Models.Add(new LocationHistoryData
+                {
+                    Quantity = quantitys[i],
+                    ProductName = names[i],
+                    Price = prices[i],
+                    Stamp = stamps[i]
+                });
+            }
+
+            return View(Models);
+
+        }
+
+        public IActionResult Restock(int ID)
+        {
+            
         }
     }
 }

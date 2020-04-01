@@ -6,8 +6,11 @@ namespace POne.dtb.Entities
 {
     public partial class POneContext : DbContext
     {
-        public POneContext()
+        private string connection;
+        
+        public POneContext(string conect)
         {
+            connection = conect;
         }
 
         public POneContext(DbContextOptions<POneContext> options)
@@ -25,7 +28,7 @@ namespace POne.dtb.Entities
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(Secret.SecretString);
+                optionsBuilder.UseSqlServer(connection);
             }
         }
 

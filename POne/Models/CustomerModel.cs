@@ -9,7 +9,7 @@ namespace POne.Models
 {
     public class CustomerModel
     {
-        [DisplayName("Customer ID")]
+        [DisplayName("This is not intended to be displayed")]
         public int? CustId { get; set; }
         
         [Required(ErrorMessage = "First Name is Required")]

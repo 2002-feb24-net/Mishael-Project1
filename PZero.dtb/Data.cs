@@ -8,9 +8,13 @@ namespace POne.dtb
 {
     public class Data
     {
+        public static string connection { get; private set; }
+
+        public static void SetConnectionString(string x) => connection = x;
+
         public static void AddLocation(string name)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 var location = new Locations { Name = name };
                 context.Add(location);
@@ -20,7 +24,7 @@ namespace POne.dtb
 
         public static int GetQuantity(int ID, Func<int> GetInt)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 int max = context.Products.Find(ID).Stock;
                 int input = GetInt();
@@ -35,7 +39,7 @@ namespace POne.dtb
 
         public static int ProductFromName(string name)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 int output = 0;
                 foreach (var item in context.Products) if (item.Name == name) output = item.PrdId;
@@ -45,7 +49,7 @@ namespace POne.dtb
 
         public static void AddProduct(string name, int LocID, decimal p, int s)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 var product = new Products
                 {
@@ -61,7 +65,7 @@ namespace POne.dtb
 
         public static void AddOrder(int customer, IOrderList order)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 decimal price = 0;
                 foreach (var orderdata in order.Cart)
@@ -87,7 +91,7 @@ namespace POne.dtb
 
         public static decimal GetPrice(int PID)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 return context.Products.Find(PID).Price;
             }
@@ -95,7 +99,7 @@ namespace POne.dtb
 
         public static void AddCustomer(string name)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 var customer = new Customers { Name = name };
                 context.Add(customer);
@@ -105,7 +109,7 @@ namespace POne.dtb
 
         public static void StockProduct(int ID, int stock)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 context.Products.Find(ID).Stock += stock;
                 context.SaveChanges();
@@ -114,7 +118,7 @@ namespace POne.dtb
 
         public static void RemoveStore(int activeStore)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 context.Locations.Remove(context.Locations.Find(activeStore));
                 context.SaveChanges();
@@ -131,7 +135,7 @@ namespace POne.dtb
                 OutputNames(found);
                 while (found.Count() > 0) found.RemoveAt(0);
                 string input = GetName();
-                using (var context = new POneContext())
+                using (var context = new POneContext(connection))
                 {
                     var temp = context.Customers.Where(b => b.Name.Contains(input)).ToList();
                     foreach (var i in temp)
@@ -150,7 +154,7 @@ namespace POne.dtb
 
             if(output == -1)
             {
-                using (var context = new POneContext())
+                using (var context = new POneContext(connection))
                 {
                     output = context.Customers.Where(b => b.Name.Contains(found[0])).ToList()[0].CustId;
                 }
@@ -169,7 +173,7 @@ namespace POne.dtb
                 OutputNames(found);
                 while (found.Count() > 0) found.RemoveAt(0);
                 string input = GetName();
-                using (var context = new POneContext())
+                using (var context = new POneContext(connection))
                 {
                     var temp = context.Locations.Where(b => b.Name.Contains(input)).ToList();
                     foreach (var i in temp)
@@ -188,7 +192,7 @@ namespace POne.dtb
 
             if (output == -1)
             {
-                using (var context = new POneContext())
+                using (var context = new POneContext(connection))
                 {
                     output = context.Locations.Where(b => b.Name.Contains(found[0])).First().LocId;
                 }
@@ -199,7 +203,7 @@ namespace POne.dtb
 
         public static string GetCustomer(int ID)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 return context.Customers.Find(ID).Name;
             }
@@ -207,7 +211,7 @@ namespace POne.dtb
 
         public static string GetStore(int ID)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 return context.Locations.Find(ID).Name;
             }
@@ -215,14 +219,14 @@ namespace POne.dtb
 
         public static List<string> GetCustomers()
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 return ((from f in context.Customers select f.Name).ToList());
             }
         }
         public static List<string> GetStores()
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 return ((from f in context.Locations select f.Name).ToList());
             }
@@ -230,7 +234,7 @@ namespace POne.dtb
 
         public static List<string> GetProductNames(string locationName)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 var output = new List<string>();
                 int id = context.Locations.Find(LocIdFromName(locationName)).LocId;
@@ -247,7 +251,7 @@ namespace POne.dtb
 
         public static List<decimal> GetProductPrices(string locationName)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 var output = new List<decimal>();
                 int id = context.Locations.Find(LocIdFromName(locationName)).LocId;
@@ -264,7 +268,7 @@ namespace POne.dtb
 
         public static List<int> GetProductQuantities(string locationName)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(connection))
             {
                 var output = new List<int>();
                 int id = context.Locations.Find(LocIdFromName(locationName)).LocId;
@@ -281,13 +285,13 @@ namespace POne.dtb
 
         private static int LocIdFromName(string locationName)
         {
-            using (var context = new POneContext()) foreach (var item in context.Locations) if (item.Name == locationName) return item.LocId;
+            using (var context = new POneContext(connection)) foreach (var item in context.Locations) if (item.Name == locationName) return item.LocId;
             return -1;
         }
 
         public static void RemoveCustomer(int ID)
         {
-            using(var context = new POneContext())
+            using(var context = new POneContext(connection))
             {
                 context.Customers.Remove(context.Customers.Find(ID));
                 context.SaveChanges();

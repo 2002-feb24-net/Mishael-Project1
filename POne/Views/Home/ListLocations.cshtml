@@ -1,0 +1,41 @@
+﻿@model IEnumerable<POne.Models.LocationModel>
+
+@{
+    ViewData["Title"] = "ListLocations";
+}
+
+<h1>Locations</h1>
+
+<p>
+    <a asp-action="AddLocation">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.LocID)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.LocID)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Products", "ListProductsEdit", new { ID = item.LocID }) |
+                @Html.ActionLink("Orders placed", "LocationOrderHistory", new { ID = item.LocID }) |
+                @Html.ActionLink("Delete", "RemoveLocation", new { ID = item.LocID })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

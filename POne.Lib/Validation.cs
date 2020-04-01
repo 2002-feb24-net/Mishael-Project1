@@ -24,7 +24,7 @@ namespace POne.Lib
 
         internal static bool LocID(int ID)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(POne.dtb.Data.connection))
             {
                 foreach (var item in context.Locations)
                 {
@@ -39,7 +39,7 @@ namespace POne.Lib
 
         internal static bool CustID(int ID)
         {
-            using (var context = new POneContext())
+            using (var context = new POneContext(POne.dtb.Data.connection))
             {
                 foreach (var item in context.Customers)
                 {

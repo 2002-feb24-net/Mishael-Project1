@@ -15,7 +15,7 @@ namespace POne.Lib
                 return;
             }
 
-            throw new Exception("Error: Invalid Name Cought By Server");
+            throw new Exception("Error: Invalid Person Name Cought By Server");
         }
 
         static public void AddLocation(string name) => Data.AddLocation(name);
@@ -40,6 +40,17 @@ namespace POne.Lib
             }
 
             throw new Exception("Error: Invalid Person Reference Cought By Server");
+        }
+
+        public static void RemoveLocation(int ID)
+        {
+            if (Validation.LocID(ID))
+            {
+                Data.RemoveStore(ID);
+                return;
+            }
+
+            throw new Exception("Error: Invalid Location Reference Cought By Server");
         }
     }
 }
