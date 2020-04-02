@@ -9,6 +9,6 @@ namespace POne.Models
     public class Restock
     {
         [Display(Name = "Enter quantity:")]
-        public int quantity { get; set }
+        public int quantity { get; set; }
     }
 }
