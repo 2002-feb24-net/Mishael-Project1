@@ -10,10 +10,5 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'print hello world'
-
-- script: |
-    echo "showing current directory contents"
-    ls
-  displayName: 'Run a multi-line script'
+- script: dotnet build
+  displayName: 'attempt build'
