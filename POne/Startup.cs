@@ -24,6 +24,7 @@ namespace POne
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+                POne.dtb.Data.SetConnectionString(Configuration.GetConnectionString("Access"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,7 +33,6 @@ namespace POne
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                POne.dtb.Data.SetConnectionString(Configuration["ConnectionString:Access"]);
             }
             else
             {

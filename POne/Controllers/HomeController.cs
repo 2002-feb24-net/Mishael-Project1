@@ -233,9 +233,9 @@ namespace POne.Controllers
 
         }
 
-        public IActionResult Restock(int ID)
+        /*public IActionResult Restock(int ID)
         {
             
-        }
+        }*/
     }
 }
