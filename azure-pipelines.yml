@@ -13,4 +13,12 @@ steps:
 - script: |
     cd POne
     dotnet build
+    cd ..
   displayName: 'attempt build'
+
+- script: |
+    cd POne
+    dotnet test
+    cd ..
+  displayName: test build
+
