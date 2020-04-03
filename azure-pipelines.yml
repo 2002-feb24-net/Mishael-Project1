@@ -17,7 +17,7 @@ steps:
   displayName: 'attempt build'
 
 - script: |
-    cd /POneTest
+    cd /POne
     dotnet test --logger xml
   displayName: test build
 
