@@ -10,13 +10,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: |
-    cd POne
-    dotnet build
-    cd ..
+- script: dotnet build
   displayName: 'attempt build'
-
-
 
 - task: DotNetCoreCLI@2
   inputs:
