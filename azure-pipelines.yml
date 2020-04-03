@@ -16,15 +16,20 @@ steps:
     cd ..
   displayName: 'attempt build'
 
-- script: |
-    cd POne
-    dotnet test TEST-results xml
-    cd ..
+- script: dotnet test --logger xml
   displayName: test build
 
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'NUnit'
-    testResultsFiles: '**/TEST-*.xml'
+    testResultsFiles: '**/*.xml'
     failTaskOnFailedTests: true
     testRunTitle: 'Test'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure subscription 1(c4a1f6b6-1679-4387-966c-d14cfa1952ac)'
+    appType: 'webApp'
+    WebAppName: 'Mishael-Project-One'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
