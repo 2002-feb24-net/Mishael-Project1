@@ -242,7 +242,7 @@ namespace POne.Controllers
 
         public IActionResult Restock(int ID)
         {
-            ViewData["ProductName"] = Output.GetProductName(ID);
+            ViewData["ProductID"] = Output.GetProductName(ID);
 
             return View();
         }
