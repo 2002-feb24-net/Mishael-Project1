@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\POne.dtb\POne.dtb.csproj" />
-    <ProjectReference Include="..\PZero.dtb\POne.dtb.csproj" />
   </ItemGroup>
 
 </Project>
