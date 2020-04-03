@@ -14,7 +14,10 @@ jobs:
     vmImage: 'ubuntu-latest'
 
   steps:
-  - script: dotnet build
+  - script: |
+      cd POne
+      dotnet build
+      cd ..
     displayName: 'attempt build'
 
   - task: DotNetCoreCLI@2
