@@ -42,7 +42,7 @@ jobs:
 
   steps:
 
-  - script: dotnet test /. --logger trx
+  - script: dotnet test ./POneTest --logger trx
     displayName: Executeing tests
 
   - task: PublishTestResults@2
