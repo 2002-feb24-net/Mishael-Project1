@@ -42,12 +42,7 @@ jobs:
 
   steps:
 
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'test'
-      projects: 'POneTest/*.csproj'
-      arguments: '--logger trx'
-      testRunTitle: 'running test'
+  - script: dotnet test --logger trx
     displayName: Executeing tests
 
   - task: PublishTestResults@2
