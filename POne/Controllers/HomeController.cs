@@ -151,6 +151,11 @@ namespace POne.Controllers
             List<decimal> prices = Output.GetProductPrices(ID ?? default);
             List<int> stock = Output.GetProductStock(ID ?? default);
 
+            if (IDs.Count == 0)
+            {
+                Models.Add(new ProductModel() { LocId = ID ?? default, Name = "none" });
+            }
+
             for (int i = 0; i < IDs.Count; i++)
             {
                 Models.Add(new ProductModel
@@ -158,7 +163,8 @@ namespace POne.Controllers
                     PrdId = IDs[i],
                     Name = names[i],
                     Price = prices[i],
-                    Stock = stock[i]
+                    Stock = stock[i],
+                    LocId = ID ?? default
                 });
             }
 
@@ -168,9 +174,10 @@ namespace POne.Controllers
         public IActionResult AddProduct(int ID)
         {
             ViewData["LocationName"] = Output.GetLocationName(ID);
-            ViewData["ID"] = ID;
 
-            return View();
+            TempData["LocationID"] = ID;
+
+            return View(new ProductModel() { LocId = ID });
         }
 
         [HttpPost]
@@ -179,8 +186,8 @@ namespace POne.Controllers
         {
             if (ModelState.IsValid)
             {
-                Input.AddProduct(product.Name, (int)ViewData["ID"], product.Price ,product.Stock);
-                return RedirectToAction("ListLocations", new { ID = (int)ViewData["ID"] } );
+                Input.AddProduct(product.Name, (int)TempData["LocationID"], product.Price, product.Stock);
+                return RedirectToAction("ListLocations", new { ID = (int)TempData["LocationID"] } );
             }
 
             return View();
