@@ -16,7 +16,9 @@ steps:
     cd ..
   displayName: 'attempt build'
 
-- script: dotnet test --logger xml
+- script: |
+    cd /POneTest
+    dotnet test --logger xml
   displayName: test build
 
 - task: PublishTestResults@2
