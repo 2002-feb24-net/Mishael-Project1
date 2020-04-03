@@ -240,9 +240,20 @@ namespace POne.Controllers
 
         }
 
-        /*public IActionResult Restock(int ID)
+        public IActionResult Restock(int ID)
         {
-            
-        }*/
+            ViewData["ProductName"] = Output.GetProductName(ID);
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Restock(Restock x)
+        {
+            Input.Restock((int)TempData["ProductID"], x.quantity);
+
+            return RedirectToAction("ListProductsEdit", new { ID = (int)TempData["LocationID"] });
+        }
     }
 }

@@ -260,6 +260,21 @@ namespace POne.Lib
             throw new Exception("Error: Invalid Location Reference Cought By Server");
         }
 
+        public static string GetProductName(int ID)
+        {
+            using (var context = new POneContext(dtb.Data.connection))
+            {
+                foreach (var item in context.Products)
+                {
+                    if (item.PrdId == ID)
+                    {
+                        return item.Name;
+                    }
+                }
+            }
+            return null;
+        }
+
         public static List<int> GetLocationHistoryQuantity(int ID)
         {
             if (Validation.LocID(ID))
