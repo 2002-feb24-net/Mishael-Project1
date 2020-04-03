@@ -53,7 +53,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: 'NUnit'
-      testResultsFiles: '**/*.xml'
+      testResultsFiles: '**/*.trx'
       failTaskOnFailedTests: true
       testRunTitle: 'Test'
     displayName: Publishing test results
