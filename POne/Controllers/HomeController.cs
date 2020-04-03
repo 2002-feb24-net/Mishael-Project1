@@ -29,6 +29,21 @@ namespace POne.Controllers
             return View();
         }
 
+        [NonAction]
+        private int GetCartItemID(int i) => (int)TempData[$"CartItem{i}"];
+
+        [NonAction]
+        private void SetCartItemID(int i, int ID) => TempData[$"CartItem{i}"] = ID;
+
+        [NonAction]
+        private int GetCartItemQuantity(int i) => (int)TempData[$"CartStock{i}"];
+
+        [NonAction]
+        private void SetCartItemQuantity(int i, int Quantity) => TempData[$"CartStock{i}"] = Quantity;
+
+        [NonAction]
+        private int GetCartSize() => (int)TempData[$"CartSize"];
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -195,7 +210,9 @@ namespace POne.Controllers
 
         public IActionResult LocationOrderHistory(int ID)
         {
-            var Models = new List<LocationHistoryData>();
+            var Models = new List<OrderHistoryData>();
+
+            ViewData["LocationName"] = Output.GetLocationName(ID);
 
             List<string> names = Output.GetLocationHistoryNames(ID);
             List<decimal> prices = Output.GetLocationHistoryPrice(ID);
@@ -204,7 +221,7 @@ namespace POne.Controllers
 
             for (int i = 0; i < names.Count; i++)
             {
-                Models.Add(new LocationHistoryData
+                Models.Add(new OrderHistoryData
                 {
                     Quantity = quantitys[i],
                     ProductName = names[i],
@@ -218,16 +235,18 @@ namespace POne.Controllers
 
         public IActionResult CustomerOrderHistory(int ID)
         {
-            var Models = new List<LocationHistoryData>();
+            var Models = new List<OrderHistoryData>();
 
-            List<string> names = Output.GetLocationHistoryNames(ID);
-            List<decimal> prices = Output.GetLocationHistoryPrice(ID);
-            List<DateTime> stamps = Output.GetLocationHistoryStamp(ID);
-            List<int> quantitys = Output.GetLocationHistoryQuantity(ID);
+            ViewData[""] = Output.GetPersonNames(ID);
+
+            List<string> names = Output.GetPersonHistoryNames(ID);
+            List<decimal> prices = Output.GetPersonHistoryPrice(ID);
+            List<DateTime> stamps = Output.GetPersonHistoryStamp(ID);
+            List<int> quantitys = Output.GetPersonHistoryQuantity(ID);
 
             for (int i = 0; i < names.Count; i++)
             {
-                Models.Add(new LocationHistoryData
+                Models.Add(new OrderHistoryData
                 {
                     Quantity = quantitys[i],
                     ProductName = names[i],

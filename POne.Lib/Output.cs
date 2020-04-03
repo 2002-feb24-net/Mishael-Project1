@@ -260,6 +260,19 @@ namespace POne.Lib
             throw new Exception("Error: Invalid Location Reference Cought By Server");
         }
 
+        public static object GetPersonNames(int ID)
+        {
+            if (Validation.CustID(ID))
+            {
+                using (var context = new POneContext(dtb.Data.connection))
+                {
+                    return context.Customers.Find(ID);
+                }
+            }
+
+            throw new Exception("Error: Invalid Customer Reference Cought By Server");
+        }
+
         public static string GetProductName(int ID)
         {
             using (var context = new POneContext(dtb.Data.connection))
@@ -302,5 +315,45 @@ namespace POne.Lib
 
             throw new Exception("Error: Invalid Location Reference Cought By Server");
         }
+
+        private static List<T> SearchPerson<T>(int ID, Func<Orders, OrderData, T> get)
+        {
+            if (Validation.CustID(ID))
+            {
+                var output = new List<T>();
+
+                using (var context = new POneContext(POne.dtb.Data.connection))
+                {
+                    var orders = context.Orders.ToList();
+                    var data = context.OrderData.ToList();
+                    foreach (var itemX in orders)
+                    {
+                        foreach (var itemY in data)
+                        {
+                            if (itemX.OrdId == itemY.OrdId && itemX.CustId == ID)
+                            {
+                                output.Add(get(itemX, itemY));
+                            }
+                        }
+                    }
+                }
+
+                return output;
+            }
+
+            throw new Exception("Error: Invalid Customer Reference Cought By Server");
+        }
+
+        public static List<string> GetPersonHistoryNames(int ID) =>
+            SearchPerson<string>(ID, (order,orderData) => GetProductName(orderData.PrdId));
+
+        public static List<DateTime> GetPersonHistoryStamp(int ID) =>
+            SearchPerson<DateTime>(ID, (order, orderData) => order.Stamp);
+
+        public static List<int> GetPersonHistoryQuantity(int ID) =>
+            SearchPerson<int>(ID, (order, orderData) => orderData.Quantity);
+
+        public static List<decimal> GetPersonHistoryPrice(int ID) =>
+            SearchPerson<decimal>(ID, (order, orderData) => orderData.Price);
     }
 }
