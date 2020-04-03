@@ -22,7 +22,9 @@ steps:
     cd ..
   displayName: test build
 
-- script:
-    dotnet publish -p:PublishProfile=POne\Properties\PublishProfiles\Mishael-Project-One - Web Deploy.pubxml
-  displayName: publish
-
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'NUnit'
+    testResultsFiles: '**/TEST-*.xml'
+    failTaskOnFailedTests: true
+    testRunTitle: 'Test'
