@@ -6,40 +6,53 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+jobs:
 
-steps:
-- script: dotnet build
-  displayName: 'attempt build'
+- job: build
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: 'POneTest/*.csproj'
-    arguments: '--logger trx'
-    testRunTitle: 'running test'
-  displayName: Executeing tests
+  pool:
+    vmImage: 'ubuntu-latest'
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'NUnit'
-    testResultsFiles: '**/*.xml'
-    failTaskOnFailedTests: true
-    testRunTitle: 'Test'
-  displayName: Publishing test results
+  steps:
+  - script: dotnet build
+    displayName: 'attempt build'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-  displayName: Compileing a publish
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'publish'
+      publishWebProjects: true
+    displayName: Compileing a publish
 
-- task: AzureRmWebAppDeployment@4
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure subscription 1(c4a1f6b6-1679-4387-966c-d14cfa1952ac)'
-    appType: 'webApp'
-    WebAppName: 'Mishael-Project-One'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-  displayName: Executeing a publish
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: 'Azure subscription 1(c4a1f6b6-1679-4387-966c-d14cfa1952ac)'
+      appType: 'webApp'
+      WebAppName: 'Mishael-Project-One'
+      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    displayName: Executeing a publish
+
+- job: test
+
+  pool:
+    vmimage: windows
+
+  steps:
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      projects: 'POneTest/*.csproj'
+      arguments: '--logger trx'
+      testRunTitle: 'running test'
+    displayName: Executeing tests
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/*.xml'
+      failTaskOnFailedTests: true
+      testRunTitle: 'Test'
+    displayName: Publishing test results
+
+  
