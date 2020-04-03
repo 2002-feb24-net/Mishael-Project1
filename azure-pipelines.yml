@@ -18,7 +18,7 @@ steps:
 
 - script: |
     cd POne
-    dotnet test
+    dotnet test TEST-results xml
     cd ..
   displayName: test build
 
