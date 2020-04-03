@@ -6,40 +6,51 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+jobs:
 
-steps:
-- script: |
-    cd POne
-    dotnet build
-    cd ..
-  displayName: 'attempt build'
+- job: build
 
+  pool:
+    vmImage: 'ubuntu-latest'
 
+  steps:
+  - script: |
+      cd POne
+      dotnet build
+      cd ..
+    displayName: 'attempt build'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: 'POneTest/*.csproj'
-    arguments: '--logger trx'
-    testRunTitle: 'running test'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'publish'
+      publishWebProjects: true
+    displayName: Compileing a publish
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'NUnit'
-    testResultsFiles: '**/*.xml'
-    failTaskOnFailedTests: true
-    testRunTitle: 'Test'
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: 'Azure subscription 1(c4a1f6b6-1679-4387-966c-d14cfa1952ac)'
+      appType: 'webApp'
+      WebAppName: 'Mishael-Project-One'
+      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    displayName: Executeing a publish
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-- task: AzureRmWebAppDeployment@4
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure subscription 1(c4a1f6b6-1679-4387-966c-d14cfa1952ac)'
-    appType: 'webApp'
-    WebAppName: 'Mishael-Project-One'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- job: test
+
+  pool:
+    vmimage: windows-latest
+
+  steps:
+
+  - script: dotnet test ./POneTest --logger trx
+    displayName: Executeing tests
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/*.xml'
+      failTaskOnFailedTests: true
+      testRunTitle: 'Test'
+    displayName: Publishing test results
+
+  
