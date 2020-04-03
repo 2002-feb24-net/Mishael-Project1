@@ -16,11 +16,13 @@ steps:
     cd ..
   displayName: 'attempt build'
 
+
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: 'POneTest/*.csproj'
-    arguments: '--logger xml'
+    arguments: '--logger trx'
     testRunTitle: 'running test'
 
 - task: PublishTestResults@2
