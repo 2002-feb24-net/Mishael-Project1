@@ -38,7 +38,7 @@ jobs:
 - job: test
 
   pool:
-    vmimage: windows
+    vmimage: windows-latest
 
   steps:
 
