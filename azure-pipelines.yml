@@ -22,6 +22,7 @@ jobs:
       scannerMode: 'MSBuild'
       projectKey: '2002-feb24-net_Mishael-Project1'
       projectName: 'POne'
+      extraProperties: 'sonar.exclusions=**/lib/**'
     displayName: prepare analisis
 
   - script: |
