@@ -24,6 +24,7 @@ steps:
     projects: 'POneTest/*.csproj'
     arguments: '--logger trx'
     testRunTitle: 'running test'
+  displayName: Executeing tests
 
 - task: PublishTestResults@2
   inputs:
@@ -31,11 +32,14 @@ steps:
     testResultsFiles: '**/*.xml'
     failTaskOnFailedTests: true
     testRunTitle: 'Test'
+  displayName: Publishing test results
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     publishWebProjects: true
+  displayName: Compileing a publish
+
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
@@ -43,3 +47,4 @@ steps:
     appType: 'webApp'
     WebAppName: 'Mishael-Project-One'
     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+  displayName: Executeing a publish
