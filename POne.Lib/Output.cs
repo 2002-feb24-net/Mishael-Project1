@@ -22,6 +22,21 @@ namespace POne.Lib
             return output;
         }
 
+        public static decimal GetProductPrice(int ID)
+        {
+            using (var context = new POneContext(dtb.Data.connection))
+            {
+                foreach (var item in context.Products)
+                {
+                    if (item.PrdId == ID)
+                    {
+                        return item.Price;
+                    }
+                }
+            }
+            return 0;
+        }
+
         public static List<string> GetCustomerNames()
         {
             var output = new List<string>();
@@ -271,6 +286,21 @@ namespace POne.Lib
             }
 
             throw new Exception("Error: Invalid Customer Reference Cought By Server");
+        }
+
+        public static int GetItemStock(int ID)
+        {
+            using (var context = new POneContext(dtb.Data.connection))
+            {
+                foreach (var item in context.Products)
+                {
+                    if (item.PrdId == ID)
+                    {
+                        return item.Stock;
+                    }
+                }
+            }
+            return 0;
         }
 
         public static string GetProductName(int ID)

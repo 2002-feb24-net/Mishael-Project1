@@ -4,19 +4,25 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using POne.Lib;
 using POne.Models;
+using POne.Services;
 
 namespace POne.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private ICartData IDs;
+        private ICartData Quantities;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICartData ID, ICartData Quant)
         {
             _logger = logger;
+            IDs = ID;
+            Quantities = Quant;
         }
 
         public IActionResult Index()
@@ -29,20 +35,22 @@ namespace POne.Controllers
             return View();
         }
 
-        [NonAction]
-        private int GetCartItemID(int i) => (int)TempData[$"CartItem{i}"];
+        private int CartSize => IDs.Size;
 
         [NonAction]
-        private void SetCartItemID(int i, int ID) => TempData[$"CartItem{i}"] = ID;
+        private int GetCartItemID(int i) => IDs[i];
 
         [NonAction]
-        private int GetCartItemQuantity(int i) => (int)TempData[$"CartStock{i}"];
+        private int GetCartItemQuantity(int i) => Quantities[i];
 
         [NonAction]
-        private void SetCartItemQuantity(int i, int Quantity) => TempData[$"CartStock{i}"] = Quantity;
+        private CartItem GetCartItem(int i) => new CartItem
+        {
+            cartIndex = i,
+            ID = GetCartItemID(i),
+            Quantity = GetCartItemQuantity(i)
+        };
 
-        [NonAction]
-        private int GetCartSize() => (int)TempData[$"CartSize"];
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -154,7 +162,7 @@ namespace POne.Controllers
             return RedirectToAction("ListLocations");
         }
 
-        public IActionResult ListProductsEdit(int? ID)
+        public IActionResult ListProducts(int? ID)
         {
             var Models = new List<ProductModel>();
 
@@ -237,7 +245,7 @@ namespace POne.Controllers
         {
             var Models = new List<OrderHistoryData>();
 
-            ViewData[""] = Output.GetPersonNames(ID);
+            ViewData["CustomerName"] = Output.GetPersonNames(ID);
 
             List<string> names = Output.GetPersonHistoryNames(ID);
             List<decimal> prices = Output.GetPersonHistoryPrice(ID);
@@ -270,9 +278,69 @@ namespace POne.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Restock(Restock x)
         {
-            Input.Restock((int)TempData["ProductID"], x.quantity);
+            if (ModelState.IsValid)
+            {
+                Input.Restock((int)TempData["ProductID"], x.quantity);
+                return RedirectToAction("ListProductsEdit", new { ID = (int)TempData["LocationID"] });
+            }
 
-            return RedirectToAction("ListProductsEdit", new { ID = (int)TempData["LocationID"] });
+            return View();
+        }
+
+        public IActionResult AddToCart(int ID, bool error = false)
+        {
+            ViewData["ItemData1"] = $"{Output.GetProductName(ID)}";
+            ViewData["ItemData2"] = $"Price:{Output.GetProductPrice(ID)} In Stock:{Output.GetItemStock(ID)}";
+            if (error) ViewData["ItemData3"] = "Quantity must be under stock";
+            else ViewData["ItemData3"] = "";
+
+            TempData["ItemID"] = ID;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddToCart(CartItem item)
+        {
+            int ID = (int)TempData["ItemID"];
+            
+            if (ModelState.IsValid)
+            {
+                if (item.Quantity <= Output.GetItemStock(ID))
+                {
+                    IDs.Add(ID);
+                    Quantities.Add(item.Quantity);
+                
+                    return RedirectToAction("Index");
+                }
+
+                return RedirectToAction("AddToCart", new { ID = ID, error = true } );
+            }
+
+            return View();
+        }
+
+        public IActionResult ListCart()
+        {
+            var Models = new List<CartItem>();
+            decimal sum = 0;
+
+            for (int i = 0; i < IDs.Size; i++)
+            {
+                Models.Add(new CartItem
+                {
+                    ID = GetCartItemID(i),
+                    Quantity = GetCartItemQuantity(i),
+                    cartIndex = i
+                }); ;
+
+                sum += Models[i].Total;
+            }
+
+            ViewData["Total"] = sum;
+
+            return View(Models);
         }
     }
 }
