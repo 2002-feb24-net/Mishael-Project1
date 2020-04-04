@@ -1,16 +1,14 @@
-﻿@model IEnumerable<POne.Models.OrderHistoryData>
+﻿@model IEnumerable<POne.Models.CartItem>
 
 @{
-    ViewData["Title"] = "LocationOrderHistory";
+    ViewData["Title"] = "ListCart";
 }
-
-<h1>LocationOrderHistory</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ProductName)
+                @Html.DisplayNameFor(model => model.ItemName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Quantity)
@@ -21,9 +19,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Total)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stamp)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -31,7 +26,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
+                @Html.DisplayFor(modelItem => item.ItemName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Quantity)
@@ -43,9 +38,20 @@
                 @Html.DisplayFor(modelItem => item.Total)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Stamp)
+                @Html.ActionLink("Edit Quantity", "EditCartItemQuantity", new { i = item.cartIndex }) |
+                @Html.ActionLink("Delete", "DeleteCartItem", new { i = item.cartIndex })
             </td>
         </tr>
 }
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <b>Total:</b>
+        </td>
+        <td>
+            <b>@ViewData["Total"]</b>
+        </td>
+    </tr>
     </tbody>
 </table>

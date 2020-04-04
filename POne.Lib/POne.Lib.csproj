@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PZero.dtb\POne.dtb.csproj" />
+    <ProjectReference Include="..\POne.dtb\POne.dtb.csproj" />
   </ItemGroup>
 
 </Project>

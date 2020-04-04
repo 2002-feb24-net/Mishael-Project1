@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace POne.Models
 {
-    public class LocationHistoryData
+    public class OrderHistoryData
     {
         [Display(Name = "Product Name")]
         public string ProductName { get; set; }

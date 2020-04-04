@@ -51,5 +51,20 @@ namespace POne.Lib
             }
             return false;
         }
+
+        internal static bool ProdID(int ID)
+        {
+            using (var context = new POneContext(dtb.Data.connection))
+            {
+                foreach (var item in context.Products)
+                {
+                    if (item.PrdId == ID)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }

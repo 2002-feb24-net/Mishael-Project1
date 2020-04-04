@@ -52,5 +52,16 @@ namespace POne.Lib
 
             throw new Exception("Error: Invalid Location Reference Cought By Server");
         }
+
+        public static void Restock(int ID, int ammount)
+        {
+            if (Validation.ProdID(ID))
+            {
+                Data.StockProduct(ID,ammount);
+                return;
+            }
+
+            throw new Exception("Error: Invalid Product Reference Cought By Server");
+        }
     }
 }

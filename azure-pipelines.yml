@@ -6,23 +6,71 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+jobs:
 
-steps:
-- script: |
-    cd POne
-    dotnet build
-    cd ..
-  displayName: 'attempt build'
+- job: build
 
-- script: |
-    cd POne
-    dotnet test
-    cd ..
-  displayName: test build
+  pool:
+    vmImage: 'ubuntu-latest'
 
-- script:
-    dotnet publish -p:PublishProfile=POne\Properties\PublishProfiles\Mishael-Project-One - Web Deploy.pubxml
-  displayName: publish
+  steps:
 
+  - task: SonarCloudPrepare@1
+    inputs:
+      SonarCloud: 'sonarcloud stuff'
+      organization: '2002-feb24-net'
+      scannerMode: 'MSBuild'
+      projectKey: '2002-feb24-net_Mishael-Project1'
+      projectName: 'POne'
+      extraProperties: 'sonar.exclusions=**/lib/**'
+    displayName: prepare analisis
+
+  - script: |
+      cd POne
+      dotnet build
+      cd ..
+    displayName: 'attempt build'
+
+  - task: SonarCloudAnalyze@1
+    displayName: run analisis
+
+  - task: SonarCloudPublish@1
+    inputs:
+      pollingTimeoutSec: '300'
+    displayName: publish analisis
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'publish'
+      publishWebProjects: true
+    displayName: Compileing a publish
+
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: 'Azure subscription 1(c4a1f6b6-1679-4387-966c-d14cfa1952ac)'
+      appType: 'webApp'
+      WebAppName: 'Mishael-Project-One'
+      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    displayName: Executeing a publish
+
+- job: test
+
+  pool:
+    vmimage: windows-latest
+
+  steps:
+
+  - script: dotnet test ./POneTest --logger trx
+    displayName: Executeing tests
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/*.xml'
+      failTaskOnFailedTests: true
+      testRunTitle: 'Test'
+    displayName: Publishing test results
+
+
+  

@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Products", "ListProductsEdit", new { ID = item.LocID }) |
+                @Html.ActionLink("Products", "ListProducts", new { ID = item.LocID }) |
                 @Html.ActionLink("Orders placed", "LocationOrderHistory", new { ID = item.LocID }) |
                 @Html.ActionLink("Delete", "RemoveLocation", new { ID = item.LocID })
             </td>
