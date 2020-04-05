@@ -8,21 +8,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using POne.Lib;
 using POne.Models;
-using POne.Services;
 
 namespace POne.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private ICartData IDs;
-        private ICartData Quantities;
 
-        public HomeController(ILogger<HomeController> logger, ICartData ID, ICartData Quant)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            IDs = ID;
-            Quantities = Quant;
         }
 
         public IActionResult Index()
@@ -35,13 +30,39 @@ namespace POne.Controllers
             return View();
         }
 
-        private int CartSize => IDs.Size;
+        private int CartSize
+        {
+            get => (int?)TempData.Peek("CartSize") ?? default;
+            set => TempData["CartSize"] = value;
+        }
 
         [NonAction]
-        private int GetCartItemID(int i) => IDs[i];
+        private int GetCartItemID(int i) => (int?)TempData.Peek($"ItemID{i}") ?? default;
 
         [NonAction]
-        private int GetCartItemQuantity(int i) => Quantities[i];
+        private int GetCartItemQuantity(int i) => (int?)TempData.Peek($"ItemQuantiny{i}") ?? default;
+
+        [NonAction]
+        private void SetCartItemID(int i, int ID) => TempData[$"ItemID{i}"] = ID;
+
+        [NonAction]
+        private void SetCartItemQuantity(int i, int Quantity) => TempData[$"ItemQuantiny{i}"] = Quantity;
+
+        [NonAction]
+        private bool PopCart()
+        {
+            if (CartSize != 0)
+            {
+                int? ID = (int?)TempData[$"ItemID{CartSize-1}"];
+                ID = (int?)TempData[$"ItemQuantity{CartSize-1}"];
+                CartSize--;
+                return true;
+            }
+            return false;
+        }
+
+        [NonAction]
+        private void EmptyCart() { while (PopCart()); }
 
         [NonAction]
         private CartItem GetCartItem(int i) => new CartItem
@@ -167,7 +188,7 @@ namespace POne.Controllers
             var Models = new List<ProductModel>();
 
             ViewData["LocationName"] = Output.GetLocationName(ID ?? default);
-            ViewData["ID"] = ID;
+            TempData["LocationID"] = ID ?? default;
 
             List<int> IDs = Output.GetProductIDs(ID ?? default);
             List<string> names = Output.GetProductNames(ID ?? default);
@@ -270,6 +291,7 @@ namespace POne.Controllers
         public IActionResult Restock(int ID)
         {
             ViewData["ProductID"] = Output.GetProductName(ID);
+            TempData["ProductID"] = ID;
 
             return View();
         }
@@ -281,7 +303,7 @@ namespace POne.Controllers
             if (ModelState.IsValid)
             {
                 Input.Restock((int)TempData["ProductID"], x.quantity);
-                return RedirectToAction("ListProductsEdit", new { ID = (int)TempData["LocationID"] });
+                return RedirectToAction("ListProducts", new { ID = (int)TempData["LocationID"] });
             }
 
             return View();
@@ -289,6 +311,21 @@ namespace POne.Controllers
 
         public IActionResult AddToCart(int ID, bool error = false)
         {
+            bool exists = false;
+            int CartID = 0;
+            for (int i = 0; i < CartSize; i++)
+            {
+                if (GetCartItem(i).ID == ID)
+                {
+                    exists = true;
+                    CartID = i;
+                }
+            }
+            if (exists)
+            {
+                return RedirectToAction("EditCartItemQuantity", new { ID = CartID } );
+            }
+            
             ViewData["ItemData1"] = $"{Output.GetProductName(ID)}";
             ViewData["ItemData2"] = $"Price:{Output.GetProductPrice(ID)} In Stock:{Output.GetItemStock(ID)}";
             if (error) ViewData["ItemData3"] = "Quantity must be under stock";
@@ -309,8 +346,9 @@ namespace POne.Controllers
             {
                 if (item.Quantity <= Output.GetItemStock(ID))
                 {
-                    IDs.Add(ID);
-                    Quantities.Add(item.Quantity);
+                    SetCartItemID(CartSize, ID);
+                    SetCartItemQuantity(CartSize, item.Quantity);
+                    CartSize++;
                 
                     return RedirectToAction("Index");
                 }
@@ -326,7 +364,7 @@ namespace POne.Controllers
             var Models = new List<CartItem>();
             decimal sum = 0;
 
-            for (int i = 0; i < IDs.Size; i++)
+            for (int i = 0; i < CartSize; i++)
             {
                 Models.Add(new CartItem
                 {
@@ -341,6 +379,64 @@ namespace POne.Controllers
             ViewData["Total"] = sum;
 
             return View(Models);
+        }
+
+        public IActionResult EditCartItemQuantity(int ID, bool error = false)
+        {
+            var item = GetCartItem(ID);
+
+            ViewData["ItemData1"] = $"{item.ItemName}";
+            ViewData["ItemData2"] = $"Price:{item.Price} In Stock:{Output.GetItemStock(item.ID)}";
+            if (error) ViewData["ItemData3"] = "Quantity must be under stock";
+            else ViewData["ItemData3"] = "";
+            ViewData["ItemData4"] = $"Editing quantity from : {item.Quantity}";
+
+            TempData["ItemID"] = ID;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditCartItemQuantity(CartItem item)
+        {
+            int ID = (int)TempData["ItemID"];
+
+            if (ModelState.IsValid)
+            {
+                if (item.Quantity <= Output.GetItemStock(GetCartItem(ID).ID))
+                {
+                    SetCartItemQuantity(ID, item.Quantity);
+
+                    return RedirectToAction("Index");
+                }
+
+                return RedirectToAction("EditCartItemQuantity", new { ID = ID, error = true });
+            }
+
+            return View();
+        }
+
+        public IActionResult DeleteCartItem(int ID)
+        {
+            SetCartItemID(ID, GetCartItemID(CartSize-1));
+            SetCartItemQuantity(ID, GetCartItemQuantity(CartSize - 1));
+            PopCart();
+
+            return RedirectToAction("ListCart");
+        }
+
+        public IActionResult PlaceOrder(int ID)
+        {
+            var cart = new Output(ID);
+            for (int i = 0; i < CartSize; i++)
+            {
+                cart.AddOrder(GetCartItemID(i),GetCartItemQuantity(i));
+            }
+            cart.PlaceOrder();
+            EmptyCart();
+
+            return RedirectToAction("Index");
         }
     }
 }

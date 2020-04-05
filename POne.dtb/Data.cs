@@ -70,7 +70,7 @@ namespace POne.dtb
                 decimal price = 0;
                 foreach (var orderdata in order.Cart)
                 {
-                    price += orderdata.Price;
+                    price += orderdata.Price * orderdata.Quantity;
                 }
                 var ticket = new Orders
                 {

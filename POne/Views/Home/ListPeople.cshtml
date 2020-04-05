@@ -37,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.LName)
             </td>
             <td>
-                @Html.ActionLink("Place order", "Index", new { })|
+                @Html.ActionLink("Place order", "PlaceOrder", new { ID = item.CustId })|
                 @Html.ActionLink("View order history", "CustomerOrderHistory", new { ID = (item.CustId ?? default) })|
                 @Html.ActionLink("Delete", "RemovePerson", new { ID = item.CustId })
             </td>

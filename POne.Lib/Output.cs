@@ -1,12 +1,37 @@
-﻿using POne.dtb.Entities;
+﻿using POne.dtb;
+using POne.dtb.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace POne.Lib
 {
-    public class Output
+    public class Output : IOrderList
     {
+        public int CustID { get; set; }
+        public List<OrderData> Cart { get; set; }
+
+        public Output(int ID)
+        {
+            Cart = new List<OrderData>();
+            CustID = ID;
+        }
+
+        public void AddOrder(int ID, int quantity)
+        {
+            Cart.Add(new OrderData
+            {
+                PrdId = ID,
+                Quantity = quantity,
+                Price = Data.GetPrice(ID)
+            });
+        }
+
+        public void PlaceOrder()
+        {
+            Data.AddOrder(CustID, this);
+        }
+
         public static List<int> GetCustomerIDs()
         {
             var output = new List<int>();
