@@ -15,11 +15,13 @@ namespace POne.Models
         public int LocId { get; set; }
         
         [Required(ErrorMessage = "Product must have a name")]
+        [RegularExpression(@"^[a-zA-Z \s]{1,40}$", ErrorMessage = "Invalid characters")]
         [Display(Name = "Item")]
         public string Name { get; set; }
         
         [Required(ErrorMessage = "Product must have a price")]
         [Display(Name = "Price")]
+        [DataType(DataType.Currency)]
         public decimal Price { get; set; }
         
         [Required(ErrorMessage = "Product must have a quantity")]

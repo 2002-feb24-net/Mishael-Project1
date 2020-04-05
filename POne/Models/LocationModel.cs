@@ -13,6 +13,7 @@ namespace POne.Models
         
         [Required(ErrorMessage = "Location must have a name")]
         [Display(Name = "Store")]
+        [RegularExpression(@"^[a-zA-Z \s]{1,40}$", ErrorMessage = "Invalid characters")]
         public string Name { get; set; }
     }
 }

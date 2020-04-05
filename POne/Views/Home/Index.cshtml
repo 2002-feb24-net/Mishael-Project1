@@ -2,7 +2,10 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Im gonna put stuf here later</p>
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListPeople">Customers</a></p>
+        <p><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListLocations">Availible Stores</a></p>
+        @if (((int?)TempData.Peek("CartSize") ?? default) != 0)
+        {<p><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListCart">View Cart</a></p>}
+    </div>

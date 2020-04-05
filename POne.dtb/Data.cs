@@ -8,10 +8,21 @@ namespace POne.dtb
 {
     public class Data
     {
+        /// <summary>
+        /// Connection string for the database, must be set at least once before usage
+        /// </summary>
         public static string connection { get; private set; }
 
+        /// <summary>
+        /// set the connection string static variable
+        /// </summary>
+        /// <param name="x">Connection string</param>
         public static void SetConnectionString(string x) => connection = x;
 
+        /// <summary>
+        /// Add a location to the database
+        /// </summary>
+        /// <param name="name">Name of location</param>
         public static void AddLocation(string name)
         {
             using (var context = new POneContext(connection))
@@ -22,21 +33,11 @@ namespace POne.dtb
             }
         }
 
-        public static int GetQuantity(int ID, Func<int> GetInt)
-        {
-            using (var context = new POneContext(connection))
-            {
-                int max = context.Products.Find(ID).Stock;
-                int input = GetInt();
-                while (input > max || input <0)
-                {
-                    Console.WriteLine("input out of range");
-                    input = GetInt();
-                }
-                return input;
-            }
-        }
-
+        /// <summary>
+        /// returns a product id from the product name
+        /// </summary>
+        /// <param name="name">item name</param>
+        /// <returns>id of item</returns>
         public static int ProductFromName(string name)
         {
             using (var context = new POneContext(connection))
@@ -47,6 +48,13 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// adds a product to the database
+        /// </summary>
+        /// <param name="name">name of product</param>
+        /// <param name="LocID">id of products location</param>
+        /// <param name="p">price of item</param>
+        /// <param name="s">ctock of item</param>
         public static void AddProduct(string name, int LocID, decimal p, int s)
         {
             using (var context = new POneContext(connection))
@@ -63,6 +71,11 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// Place an order to the database
+        /// </summary>
+        /// <param name="customer">id of customer placeing order</param>
+        /// <param name="order">object containing the list of order items</param>
         public static void AddOrder(int customer, IOrderList order)
         {
             using (var context = new POneContext(connection))
@@ -89,6 +102,11 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// retrieve the price of a product
+        /// </summary>
+        /// <param name="PID">id of product</param>
+        /// <returns>price of product</returns>
         public static decimal GetPrice(int PID)
         {
             using (var context = new POneContext(connection))
@@ -97,6 +115,10 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// add a customer to the database
+        /// </summary>
+        /// <param name="name">name of customer</param>
         public static void AddCustomer(string name)
         {
             using (var context = new POneContext(connection))
@@ -107,6 +129,11 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// increce the stock of an item
+        /// </summary>
+        /// <param name="ID">items id</param>
+        /// <param name="stock">quantity to9 add</param>
         public static void StockProduct(int ID, int stock)
         {
             using (var context = new POneContext(connection))
@@ -116,6 +143,11 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// remove a store from the database
+        /// only works when the store has no products
+        /// </summary>
+        /// <param name="activeStore">id of store</param>
         public static void RemoveStore(int activeStore)
         {
             using (var context = new POneContext(connection))
@@ -125,82 +157,11 @@ namespace POne.dtb
             }
         }
 
-        public static int FindCustomer(Action<List<string>> OutputNames, Func<string> GetName)
-        {
-            List<string> found = new List<string>();
-            int output = -1;
-
-            while (found.Count != 1)
-            {
-                OutputNames(found);
-                while (found.Count() > 0) found.RemoveAt(0);
-                string input = GetName();
-                using (var context = new POneContext(connection))
-                {
-                    var temp = context.Customers.Where(b => b.Name.Contains(input)).ToList();
-                    foreach (var i in temp)
-                    {
-                        if (i.Name == input)
-                        {
-                            while (found.Count() > 0) found.RemoveAt(0);
-                            output = i.CustId;
-                            found.Add(i.Name);
-                            break;
-                        }
-                        found.Add(i.Name);
-                    }
-                }
-            }
-
-            if(output == -1)
-            {
-                using (var context = new POneContext(connection))
-                {
-                    output = context.Customers.Where(b => b.Name.Contains(found[0])).ToList()[0].CustId;
-                }
-            }
-
-            return output;
-        }
-
-        public static int FindLocation(Action<List<string>> OutputNames, Func<string> GetName)
-        {
-            List<string> found = new List<string>();
-            int output = -1;
-
-            while (found.Count != 1)
-            {
-                OutputNames(found);
-                while (found.Count() > 0) found.RemoveAt(0);
-                string input = GetName();
-                using (var context = new POneContext(connection))
-                {
-                    var temp = context.Locations.Where(b => b.Name.Contains(input)).ToList();
-                    foreach (var i in temp)
-                    {
-                        if (i.Name == input)
-                        {
-                            while (found.Count() > 0) found.RemoveAt(0);
-                            output = i.LocId;
-                            found.Add(i.Name);
-                            break;
-                        }
-                        found.Add(i.Name);
-                    }
-                }
-            }
-
-            if (output == -1)
-            {
-                using (var context = new POneContext(connection))
-                {
-                    output = context.Locations.Where(b => b.Name.Contains(found[0])).First().LocId;
-                }
-            }
-
-            return output;
-        }
-
+        /// <summary>
+        /// retrieves customer name from id
+        /// </summary>
+        /// <param name="ID">customer id</param>
+        /// <returns>name of customer</returns>
         public static string GetCustomer(int ID)
         {
             using (var context = new POneContext(connection))
@@ -209,6 +170,11 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// retrieves store name from id
+        /// </summary>
+        /// <param name="ID">store id</param>
+        /// <returns>store name</returns>
         public static string GetStore(int ID)
         {
             using (var context = new POneContext(connection))
@@ -217,6 +183,10 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// returns a list of customer names
+        /// </summary>
+        /// <returns>names</returns>
         public static List<string> GetCustomers()
         {
             using (var context = new POneContext(connection))
@@ -224,6 +194,11 @@ namespace POne.dtb
                 return ((from f in context.Customers select f.Name).ToList());
             }
         }
+        
+        /// <summary>
+        /// returns a list of store names
+        /// </summary>
+        /// <returns>store names</returns>
         public static List<string> GetStores()
         {
             using (var context = new POneContext(connection))
@@ -232,6 +207,11 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// returns a list of product names
+        /// </summary>
+        /// <param name="locationName">name of location</param>
+        /// <returns>list of product names</returns>
         public static List<string> GetProductNames(string locationName)
         {
             using (var context = new POneContext(connection))
@@ -248,7 +228,11 @@ namespace POne.dtb
                 return output;
             }
         }
-
+        /// <summary>
+        /// returns a list of product prices
+        /// </summary>
+        /// <param name="locationName">name of location</param>
+        /// <returns>list of product prices</returns>
         public static List<decimal> GetProductPrices(string locationName)
         {
             using (var context = new POneContext(connection))
@@ -266,6 +250,11 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// returns a list of product quantities
+        /// </summary>
+        /// <param name="locationName">name of location</param>
+        /// <returns>list of quantities</returns>
         public static List<int> GetProductQuantities(string locationName)
         {
             using (var context = new POneContext(connection))
@@ -283,12 +272,21 @@ namespace POne.dtb
             }
         }
 
+        /// <summary>
+        /// retrieves the id of a product from its name
+        /// </summary>
+        /// <param name="locationName">name of location</param>
+        /// <returns>location id</returns>
         private static int LocIdFromName(string locationName)
         {
             using (var context = new POneContext(connection)) foreach (var item in context.Locations) if (item.Name == locationName) return item.LocId;
             return -1;
         }
 
+        /// <summary>
+        /// remove a customer from the database
+        /// </summary>
+        /// <param name="ID">id of customer</param>
         public static void RemoveCustomer(int ID)
         {
             using(var context = new POneContext(connection))

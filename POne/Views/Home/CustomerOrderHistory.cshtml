@@ -4,7 +4,7 @@
     ViewData["Title"] = "CustomerOrderHistory";
 }
 
-<h1>@ViewData["CustomerName"]</h1>
+<h1>@ViewData["CustomerName"]:</h1>
 
 
 <table class="table">
@@ -20,10 +20,10 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Stamp)
+                @Html.DisplayNameFor(model => model.Total)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Total)
+                @Html.DisplayNameFor(model => model.Stamp)
             </th>
             <th></th>
         </tr>
@@ -41,10 +41,10 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Stamp)
+                @Html.DisplayFor(modelItem => item.Total)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Total)
+                @Html.DisplayFor(modelItem => item.Stamp)
             </td>
         </tr>
 }

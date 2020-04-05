@@ -423,6 +423,8 @@ namespace POne.Controllers
             SetCartItemQuantity(ID, GetCartItemQuantity(CartSize - 1));
             PopCart();
 
+            if (CartSize < 1) return RedirectToAction("Index");
+
             return RedirectToAction("ListCart");
         }
 

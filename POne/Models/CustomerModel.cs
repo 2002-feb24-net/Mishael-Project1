@@ -14,9 +14,11 @@ namespace POne.Models
         
         [Required(ErrorMessage = "First Name is Required")]
         [DisplayName("First Name")]
+        [RegularExpression(@"^[a-zA-Z\s]{1,40}$", ErrorMessage = "Invalid characters")]
         public string FName { get; set; }
         
         [DisplayName("Last Name")]
+        [RegularExpression(@"^[a-zA-Z\s]{1,40}$", ErrorMessage = "Invalid characters")]
         public string LName { get; set; }
     }
 }
