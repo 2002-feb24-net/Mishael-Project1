@@ -4,7 +4,7 @@
     ViewData["Title"] = "Restock";
 }
 
-<h1>Restock @ViewData["ProductName"]</h1>
+<h1>Restock @TempData.Peek("ProductName")</h1>
 
 <hr />
 <div class="row">

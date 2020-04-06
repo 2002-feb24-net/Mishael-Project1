@@ -90,6 +90,7 @@ namespace POne.Controllers
         {
             if(ModelState.IsValid)
             {
+                _logger.LogInformation($"Adding {input.FName}, {input.LName} to database");
                 Input.AddPerson(input.FName, input.LName);
                 return RedirectToAction("ListPeople");
             }
@@ -120,6 +121,8 @@ namespace POne.Controllers
             List<int> IDs = Output.GetCustomerIDs();
             List<string> names = Output.GetCustomerNames();
 
+            _logger.LogInformation("retrieveing list of people from database");
+
             for (int i = 0; i < IDs.Count; i++)
             {
                 Models.Add(new CustomerModel {
@@ -136,6 +139,8 @@ namespace POne.Controllers
         {
             Input.RemovePerson(ID ?? default);
 
+            _logger.LogInformation($"removeing {Output.GetPersonName(ID)} from database");
+
             return RedirectToAction("ListPeople");
         }
 
@@ -150,6 +155,7 @@ namespace POne.Controllers
         {
             if (ModelState.IsValid)
             {
+                _logger.LogInformation($"adding {input.Name} to database");
                 Input.AddLocation(input.Name);
                 return RedirectToAction("ListLocations");
             }
@@ -160,6 +166,8 @@ namespace POne.Controllers
         public IActionResult ListLocations()
         {
             var Models = new List<LocationModel>();
+
+            _logger.LogInformation("quarying database for locations");
 
             List<int> IDs = Output.GetLocationIDs();
             List<string> names = Output.GetLocationNames();
@@ -178,6 +186,8 @@ namespace POne.Controllers
 
         public IActionResult RemoveLocation(int? ID)
         {
+            _logger.LogInformation($"removeing {Output.GetLocationName(ID ?? default)} from database");
+            
             Input.RemoveLocation(ID ?? default);
 
             return RedirectToAction("ListLocations");
@@ -189,6 +199,8 @@ namespace POne.Controllers
 
             ViewData["LocationName"] = Output.GetLocationName(ID ?? default);
             TempData["LocationID"] = ID ?? default;
+
+            _logger.LogInformation($"quarying database for products within {Output.GetLocationName(ID ?? default)}");
 
             List<int> IDs = Output.GetProductIDs(ID ?? default);
             List<string> names = Output.GetProductNames(ID ?? default);
@@ -230,6 +242,7 @@ namespace POne.Controllers
         {
             if (ModelState.IsValid)
             {
+                _logger.LogInformation($"adding product \'{product.Name}\' to database");
                 Input.AddProduct(product.Name, (int)TempData["LocationID"], product.Price, product.Stock);
                 return RedirectToAction("ListLocations", new { ID = (int)TempData["LocationID"] } );
             }
@@ -242,6 +255,8 @@ namespace POne.Controllers
             var Models = new List<OrderHistoryData>();
 
             ViewData["LocationName"] = Output.GetLocationName(ID);
+
+            _logger.LogInformation($"quarying database for order data of location \'{Output.GetLocationName(ID)}\'");
 
             List<string> names = Output.GetLocationHistoryNames(ID);
             List<decimal> prices = Output.GetLocationHistoryPrice(ID);
@@ -268,6 +283,8 @@ namespace POne.Controllers
 
             ViewData["CustomerName"] = Output.GetPersonNames(ID);
 
+            _logger.LogInformation($"quarying database for order data of person \'{Output.GetPersonName(ID)}\'");
+
             List<string> names = Output.GetPersonHistoryNames(ID);
             List<decimal> prices = Output.GetPersonHistoryPrice(ID);
             List<DateTime> stamps = Output.GetPersonHistoryStamp(ID);
@@ -290,7 +307,7 @@ namespace POne.Controllers
 
         public IActionResult Restock(int ID)
         {
-            ViewData["ProductID"] = Output.GetProductName(ID);
+            TempData["ProductName"] = Output.GetProductName(ID);
             TempData["ProductID"] = ID;
 
             return View();
@@ -302,6 +319,7 @@ namespace POne.Controllers
         {
             if (ModelState.IsValid)
             {
+                _logger.LogInformation($"adding {x.quantity} to {TempData["ProductName"]}");
                 Input.Restock((int)TempData["ProductID"], x.quantity);
                 return RedirectToAction("ListProducts", new { ID = (int)TempData["LocationID"] });
             }
@@ -346,6 +364,7 @@ namespace POne.Controllers
             {
                 if (item.Quantity <= Output.GetItemStock(ID))
                 {
+                    _logger.LogInformation($"adding {item.Quantity} of {item.ItemName} to cart");
                     SetCartItemID(CartSize, ID);
                     SetCartItemQuantity(CartSize, item.Quantity);
                     CartSize++;
@@ -366,6 +385,8 @@ namespace POne.Controllers
 
             for (int i = 0; i < CartSize; i++)
             {
+                _logger.LogInformation("quarying cart for items");
+
                 Models.Add(new CartItem
                 {
                     ID = GetCartItemID(i),
@@ -406,6 +427,8 @@ namespace POne.Controllers
             {
                 if (item.Quantity <= Output.GetItemStock(GetCartItem(ID).ID))
                 {
+                    _logger.LogInformation($"changeing quantity of {item.ItemName} in cart to {item.Quantity}");
+                    
                     SetCartItemQuantity(ID, item.Quantity);
 
                     return RedirectToAction("Index");
@@ -419,6 +442,8 @@ namespace POne.Controllers
 
         public IActionResult DeleteCartItem(int ID)
         {
+            _logger.LogInformation($"removeing {GetCartItem(ID).ItemName} from the cart");
+            
             SetCartItemID(ID, GetCartItemID(CartSize-1));
             SetCartItemQuantity(ID, GetCartItemQuantity(CartSize - 1));
             PopCart();
@@ -435,6 +460,7 @@ namespace POne.Controllers
             {
                 cart.AddOrder(GetCartItemID(i),GetCartItemQuantity(i));
             }
+            _logger.LogInformation($"placeing order under {Output.GetPersonName(ID)}");
             cart.PlaceOrder();
             EmptyCart();
 

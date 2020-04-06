@@ -152,6 +152,16 @@ namespace POne.Lib
         }
 
         /// <summary>
+        /// retrieves name of customer
+        /// </summary>
+        /// <param name="ID">id of customer</param>
+        /// <returns>name of person</returns>
+        public static string GetPersonName(int? ID)
+        {
+            return Data.GetCustomer(ID ?? default);
+        }
+
+        /// <summary>
         /// retrieves a list of product ids
         /// </summary>
         /// <param name="ID">id of location to search</param>
