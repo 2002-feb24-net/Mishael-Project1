@@ -466,7 +466,7 @@ namespace POne.Controllers
         {
             var cart = new Output(ID);
 
-            if (CheckCartForError())
+            if (!CheckCartForError())
             {
                 return RedirectToAction("CartError");
             }
@@ -492,17 +492,18 @@ namespace POne.Controllers
             {
                 if (Output.ProductExists(GetCartItemID(i)))
                 {
-                    if (GetCartItemQuantity(i) < Output.GetItemStock(GetCartItemID(i)))
+                    if (GetCartItemQuantity(i) > Output.GetItemStock(GetCartItemID(i)))
                     {
                         TempData["ErrorData"] += $"Product \'{GetCartItem(i).ItemName}\'" +
-                            $" has decreaced in stock, its quantity in the cart has been updated";
+                            $" has decreaced in stock, its quantity in the cart has been updated\n";
                         SetCartItemQuantity(i, Output.GetItemStock(GetCartItemID(i)));
+                        valid = false;
                     }
                 }
                 else
                 {
                     valid = false;
-                    TempData["ErrorData"] += $"A product no longer exists, it has been removed from the cart";
+                    TempData["ErrorData"] += $"A product no longer exists, it has been removed from the cart\n";
                     DeleteCartItem(i--);
                 }
             }
