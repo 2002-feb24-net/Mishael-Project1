@@ -103,6 +103,19 @@ namespace POne.dtb
         }
 
         /// <summary>
+        /// removes a product from the database
+        /// </summary>
+        /// <param name="ID">id of item</param>
+        public static void RemoveProduct(int ID)
+        {
+            using (var context = new POneContext(connection))
+            {
+                context.Remove(context.Products.Find(ID));
+                context.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// retrieve the price of a product
         /// </summary>
         /// <param name="PID">id of product</param>

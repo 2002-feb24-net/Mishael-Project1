@@ -92,5 +92,20 @@ namespace POne.Lib
 
             throw new Exception("Error: Invalid Product Reference Cought By Server");
         }
+
+        /// <summary>
+        /// removes product from database
+        /// </summary>
+        /// <param name="ID">id of product</param>
+        public static void RemoveProduct(int ID)
+        {
+            if (Validation.ProdID(ID))
+            {
+                Data.RemoveProduct(ID);
+                return;
+            }
+
+            throw new Exception("Error: Invalid Product Reference Cought By Server");
+        }
     }
 }

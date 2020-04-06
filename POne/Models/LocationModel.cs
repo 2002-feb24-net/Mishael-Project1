@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POne.Lib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace POne.Models
         [Display(Name = "Store")]
         [RegularExpression(@"^[a-zA-Z \s]{1,40}$", ErrorMessage = "Invalid characters")]
         public string Name { get; set; }
+
+        public bool Removable { get => Output.IsRemovableLocation(LocID); }
     }
 }

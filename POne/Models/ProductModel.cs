@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POne.Lib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -27,5 +28,7 @@ namespace POne.Models
         [Required(ErrorMessage = "Product must have a quantity")]
         [Display(Name = "Quantity")]
         public int Stock { get; set; }
+
+        public bool removable { get => Output.IsRemovableProduct(PrdId ?? default); }
     }
 }

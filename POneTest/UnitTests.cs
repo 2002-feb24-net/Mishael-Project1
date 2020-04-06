@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using POne.Lib;
 
 namespace POneTest
 {
@@ -7,12 +8,15 @@ namespace POneTest
         [SetUp]
         public void Setup()
         {
+            
         }
 
         [Test]
-        public void Test1()
+        public void IsPhysicsOk()
         {
-            Assert.Pass();
+            Assert.AreEqual(true, true);
         }
+
+
     }
 }

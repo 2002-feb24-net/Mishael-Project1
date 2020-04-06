@@ -39,7 +39,7 @@
             <td>
                 @Html.ActionLink("Place order", "PlaceOrder", new { ID = item.CustId })|
                 @Html.ActionLink("View order history", "CustomerOrderHistory", new { ID = (item.CustId ?? default) })|
-                @Html.ActionLink("Delete", "RemovePerson", new { ID = item.CustId })
+                @if (item.IsRemovable) {@Html.ActionLink("Delete", "RemovePerson", new { ID = item.CustId })}
             </td>
         </tr>
 }

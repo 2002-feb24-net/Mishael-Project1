@@ -20,7 +20,25 @@ namespace POne.Lib
         /// active when output is used as an object
         /// </summary>
         public List<OrderData> Cart { get; set; }
-        
+
+        /// <summary>
+        /// checks if the location is removable
+        /// </summary>
+        /// <param name="ID">location id</param>
+        /// <returns>true if removable</returns>
+        public static bool IsRemovableLocation(int? ID)
+        {
+            using (var context = new POneContext(Data.connection))
+            {
+                bool hasDependencies = false;
+                foreach (var item in context.Products)
+                {
+                    hasDependencies = hasDependencies || item.LocId == ID;
+                }
+                return !hasDependencies;
+            }
+        }
+
         /// <summary>
         /// constructs an object to maintain an order cart
         /// </summary>
@@ -29,6 +47,42 @@ namespace POne.Lib
         {
             Cart = new List<OrderData>();
             CustID = ID;
+        }
+
+        /// <summary>
+        /// checks if posible to remove the customer from the database
+        /// </summary>
+        /// <param name="ID">id of customer</param>
+        /// <returns>returns true if removable</returns>
+        public static bool IsRemovableCustomer(int ID)
+        {
+            using (var context = new POneContext(Data.connection))
+            {
+                bool hasDependencies = false;
+                foreach (var item in context.Orders)
+                {
+                    hasDependencies = hasDependencies || item.CustId == ID;
+                }
+                return hasDependencies;
+            }
+        }
+
+        /// <summary>
+        /// checks if the product is removable
+        /// </summary>
+        /// <param name="ID">product id</param>
+        /// <returns>true if removable</returns>
+        public static bool IsRemovableProduct(int ID)
+        {
+            using (var context = new POneContext(Data.connection))
+            {
+                bool hasDependencies = false;
+                foreach (var item in context.OrderData)
+                {
+                    hasDependencies = hasDependencies || item.PrdId == ID;
+                }
+                return !hasDependencies;
+            }
         }
 
         /// <summary>
@@ -430,6 +484,16 @@ namespace POne.Lib
                 }
             }
             return 0;
+        }
+
+        /// <summary>
+        /// checks if a product still exists in the database
+        /// </summary>
+        /// <param name="ID">ID of item</param>
+        /// <returns>true if product exists</returns>
+        public static bool ProductExists(int ID)
+        {
+            return Validation.ProdID(ID);
         }
 
         /// <summary>

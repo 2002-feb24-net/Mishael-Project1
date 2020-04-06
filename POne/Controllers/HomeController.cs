@@ -114,6 +114,15 @@ namespace POne.Controllers
             else return x.Substring(index + 1, x.Length - index - 1);
         }
 
+        public IActionResult RemoveItem(int ID)
+        {
+            _logger.LogInformation($"removing product {Output.GetProductName(ID)} from database");
+
+            Input.RemoveProduct(ID);
+
+            return RedirectToAction("ListProducts", new { ID = TempData["LocationID"] });
+        }
+
         public IActionResult ListPeople()
         {
             var Models = new List<CustomerModel>();
@@ -456,6 +465,12 @@ namespace POne.Controllers
         public IActionResult PlaceOrder(int ID)
         {
             var cart = new Output(ID);
+
+            if (CheckCartForError())
+            {
+                return RedirectToAction("CartError");
+            }
+
             for (int i = 0; i < CartSize; i++)
             {
                 cart.AddOrder(GetCartItemID(i),GetCartItemQuantity(i));
@@ -465,6 +480,39 @@ namespace POne.Controllers
             EmptyCart();
 
             return RedirectToAction("Index");
+        }
+
+        [NonAction]
+        public bool CheckCartForError()
+        {
+            bool valid = true;
+            TempData["ErrorData"] = "";
+
+            for (int i = 0; i < CartSize; i++)
+            {
+                if (Output.ProductExists(GetCartItemID(i)))
+                {
+                    if (GetCartItemQuantity(i) < Output.GetItemStock(GetCartItemID(i)))
+                    {
+                        TempData["ErrorData"] += $"Product \'{GetCartItem(i).ItemName}\'" +
+                            $" has decreaced in stock, its quantity in the cart has been updated";
+                        SetCartItemQuantity(i, Output.GetItemStock(GetCartItemID(i)));
+                    }
+                }
+                else
+                {
+                    valid = false;
+                    TempData["ErrorData"] += $"A product no longer exists, it has been removed from the cart";
+                    DeleteCartItem(i--);
+                }
+            }
+
+            return valid;
+        }
+
+        public IActionResult CartError()
+        {
+            return View();
         }
     }
 }

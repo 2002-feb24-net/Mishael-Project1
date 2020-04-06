@@ -33,7 +33,7 @@
             <td>
                 @Html.ActionLink("Products", "ListProducts", new { ID = item.LocID }) |
                 @Html.ActionLink("Orders placed", "LocationOrderHistory", new { ID = item.LocID }) |
-                @Html.ActionLink("Delete", "RemoveLocation", new { ID = item.LocID })
+                @if (item.Removable) {@Html.ActionLink("Delete", "RemoveLocation", new { ID = item.LocID })}
             </td>
         </tr>
 }
