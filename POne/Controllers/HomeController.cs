@@ -495,7 +495,7 @@ namespace POne.Controllers
                     if (GetCartItemQuantity(i) > Output.GetItemStock(GetCartItemID(i)))
                     {
                         TempData["ErrorData"] += $"Product \'{GetCartItem(i).ItemName}\'" +
-                            $" has decreaced in stock, its quantity in the cart has been updated\n";
+                            $" has decreaced in stock, its quantity in the cart has been updated     ";
                         SetCartItemQuantity(i, Output.GetItemStock(GetCartItemID(i)));
                         valid = false;
                     }
@@ -503,7 +503,7 @@ namespace POne.Controllers
                 else
                 {
                     valid = false;
-                    TempData["ErrorData"] += $"A product no longer exists, it has been removed from the cart\n";
+                    TempData["ErrorData"] += $"A product no longer exists, it has been removed from the cart.     ";
                     DeleteCartItem(i--);
                 }
             }
