@@ -37,8 +37,9 @@
                 @Html.DisplayFor(modelItem => item.LName)
             </td>
             <td>
-                @Html.ActionLink("Place order", "PlaceOrder", new { ID = item.CustId })|
-                @Html.ActionLink("View order history", "CustomerOrderHistory", new { ID = (item.CustId ?? default) })|
+                @if (((int?)TempData.Peek("CartSize") ?? default) != 0)
+                {@Html.ActionLink("Place order", "PlaceOrder", new { ID = item.CustId })@(new string(" | "))}
+                @Html.ActionLink("View order history", "CustomerOrderHistory", new { ID = (item.CustId ?? default) })
                 @if (item.IsRemovable)
                 {@(new string(" | "))@Html.ActionLink("Delete", "RemovePerson", new { ID = item.CustId })}
             </td>

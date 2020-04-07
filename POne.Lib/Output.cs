@@ -63,7 +63,7 @@ namespace POne.Lib
                 {
                     hasDependencies = hasDependencies || item.CustId == ID;
                 }
-                return hasDependencies;
+                return !hasDependencies;
             }
         }
 

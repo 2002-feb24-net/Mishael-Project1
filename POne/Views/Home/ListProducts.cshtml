@@ -51,7 +51,7 @@
                     </td>
                     <td>
                         @Html.ActionLink("Restock", "Restock", new { ID = item.PrdId }) |
-                        @Html.ActionLink("AddItem", "AddToCart", new { ID = item.PrdId }) |
+                        @Html.ActionLink("AddItem", "AddToCart", new { ID = item.PrdId })
                         @if (item.removable)
                         {@(new string(" | "))@Html.ActionLink("Remove", "RemoveItem", new { ID = item.PrdId })}
                     </td>
